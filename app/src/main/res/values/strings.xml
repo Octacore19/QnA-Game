@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">QnA</string>
-    <string name="questions">QUESTIONS</string>
-    <string name="answers">ANSWERS</string>
+    <string name="log_out">Log Out</string>
+    <string name="enter_question">Enter question</string>
+    <string name="enter_answer">Enter answer</string>
+    <string name="questions">Question</string>
+    <string name="answers">Answer</string>
+    <string name="save">save</string>
 </resources>

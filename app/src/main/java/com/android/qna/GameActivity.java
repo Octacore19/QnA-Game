@@ -1,78 +1,105 @@
 package com.android.qna;
 
-import android.database.Cursor;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.qna.data.GameDbHelper;
-import com.android.qna.data.QnAContract.QnAEntry;
+import com.android.qna.model.Game;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.Sort;
+import io.realm.SyncConfiguration;
+import io.realm.SyncUser;
+
+import static com.android.qna.Constants.REALM_BASE_URL;
 
 public class GameActivity extends AppCompatActivity  {
 
-    private GameDbHelper mDbHelper;
-
-    private TextView mDisplay;
+    private Realm realm;
 
     public TextView mQuestionTextView;
 
     public EditText mAnswerTextView;
 
-    String currentQuestion;
-    int currentAnswer;
-    int qColumnIndex;
+    RealmResults<Game> game;
+
+    String currentQuestion, currentAnswer, answers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_main);
 
-        mDbHelper = new GameDbHelper(this);
-        mDisplay = findViewById(R.id.display);
         mQuestionTextView = findViewById(R.id.question_text);
         mAnswerTextView = findViewById(R.id.answers_text);
 
-        displayDatabaseInfo();
+        game = setUpRealm();
+        final int[] count = {0};
+        currentQuestion = game.get(count[0]).getQuestions();
+        currentAnswer = game.get(count[0]).getAnswers();
+        mQuestionTextView.setText(currentQuestion);
+        answers = mAnswerTextView.getText().toString().trim();
+
+        Button btnNext = findViewById(R.id.move);
+        btnNext.setOnClickListener(view -> {
+            if (currentAnswer.equals(answers)){
+                count[0]++;
+                currentQuestion = "" + game.get(count[0]).getQuestions();
+                currentAnswer = "" + game.get(count[0]).getAnswers();
+                mQuestionTextView.setText(currentQuestion);
+            }
+            else
+                Toast.makeText(GameActivity.this,"You have inputted a wrong answer",Toast.LENGTH_SHORT).show();
+        });
     }
 
-    private void displayDatabaseInfo(){
+    private RealmResults<Game> setUpRealm() {
+        SyncConfiguration configuration = SyncUser.current()
+                .createConfiguration(REALM_BASE_URL + "/default")
+                .build();
+        realm = Realm.getInstance(configuration);
 
-        String[] project = {
-                QnAEntry._ID,
-                QnAEntry.COLUMN_QUESTIONS,
-                QnAEntry.COLUMN_ANSWERS
-        };
+        return realm
+                .where(Game.class)
+                .sort("id", Sort.ASCENDING)
+                .findAllAsync();
+    }
 
-        Cursor cursor = getContentResolver().query(
-                QnAEntry.CONTENT_URI,
-                project,
-                null,
-                null,
-                null);
-        try{
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
 
-            mDisplay.setText("Number of rows in database is " + cursor.getCount()+"\n\n");
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.game_menu, menu);
+        return true;
+    }
 
-            cursor.moveToFirst();
-            qColumnIndex = cursor.getColumnIndex(QnAEntry.COLUMN_QUESTIONS);
-
-            currentQuestion = cursor.getString(qColumnIndex);
-            mQuestionTextView.setText(currentQuestion);
-
-            Button nextBtn = findViewById(R.id.move);
-            nextBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(GameActivity.this,"This button works",Toast.LENGTH_SHORT).show();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.log_out:
+                SyncUser syncUser = SyncUser.current();
+                if (syncUser != null) {
+                    syncUser.logOut();
+                    Intent intent = new Intent(this, WelcomeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
                 }
-            });
-        }
-        finally {
-            cursor.close();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

@@ -4,11 +4,6 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:orientation="vertical">
 
         <TextView
             android:id="@+id/question_text"
@@ -21,27 +16,13 @@
             android:id="@+id/answers_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="text"
             android:hint="@string/answers"
             android:textAppearance="?android:textAppearanceMedium" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
         <Button
             android:id="@+id/move"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="moveToNext"
-            android:text="next" />
-        <TextView
-            android:id="@+id/display"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"/>
+            android:text="SUBMIT" />
 
-    </LinearLayout>
 </LinearLayout>
