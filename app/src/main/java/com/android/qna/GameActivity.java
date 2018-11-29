@@ -3,13 +3,15 @@ package com.android.qna;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.qna.model.Game;
 
@@ -21,44 +23,35 @@ import io.realm.SyncUser;
 
 import static com.android.qna.Constants.REALM_BASE_URL;
 
-public class GameActivity extends AppCompatActivity  {
+public class GameActivity extends AppCompatActivity {
 
     private Realm realm;
 
-    public TextView mQuestionTextView;
-
     public EditText mAnswerTextView;
 
-    RealmResults<Game> game;
+    private TextView mDisplay;
 
-    String currentQuestion, currentAnswer, answers;
+    String currentQuestion, currentAnswer, answer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_main);
 
-        mQuestionTextView = findViewById(R.id.question_text);
+        setUpRealm();
+        RealmResults<Game> games = setUpRealm();
+
+        final GameRecyclerAdapter gameRecyclerAdapter = new GameRecyclerAdapter(games);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(gameRecyclerAdapter);
+
         mAnswerTextView = findViewById(R.id.answers_text);
 
-        game = setUpRealm();
-        final int[] count = {0};
-        currentQuestion = game.get(count[0]).getQuestions();
-        currentAnswer = game.get(count[0]).getAnswers();
-        mQuestionTextView.setText(currentQuestion);
-        answers = mAnswerTextView.getText().toString().trim();
-
-        Button btnNext = findViewById(R.id.move);
-        btnNext.setOnClickListener(view -> {
-            if (currentAnswer.equals(answers)){
-                count[0]++;
-                currentQuestion = "" + game.get(count[0]).getQuestions();
-                currentAnswer = "" + game.get(count[0]).getAnswers();
-                mQuestionTextView.setText(currentQuestion);
-            }
-            else
-                Toast.makeText(GameActivity.this,"You have inputted a wrong answer",Toast.LENGTH_SHORT).show();
-        });
+//        mDisplay = findViewById(R.id.display);
+//        currentQuestion = games.first().getQuestions();
+//        mDisplay.setText(String.valueOf(currentQuestion));
+//        findViewById(R.id.move).setOnClickListener(this);
     }
 
     private RealmResults<Game> setUpRealm() {
@@ -97,6 +90,9 @@ public class GameActivity extends AppCompatActivity  {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }
+                return true;
+            case R.id.add_data:
+                startActivity(new Intent(this, EditorActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
