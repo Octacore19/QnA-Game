@@ -7,8 +7,9 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
 public class Game extends RealmObject {
-    @Required
+
     @PrimaryKey
+    @Required
     private String id;
 
     @Required
@@ -17,15 +18,13 @@ public class Game extends RealmObject {
     @Required
     private String answers;
 
-    public Game(){
-        this.id = UUID.randomUUID().toString();
-        this.questions = "";
-        this.answers = "";
+    public String getId() {
+        return id;
     }
 
-    public String getId(){ return id; }
-
-    public void setId(String id){ this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getQuestions() {
         return questions;

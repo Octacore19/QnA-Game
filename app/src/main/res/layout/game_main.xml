@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
-    android:orientation="vertical">
+<layout>
 
-        <TextView
-            android:id="@+id/question_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/questions"
-            android:textAppearance="?android:textAppearanceMedium" />
+    <data>
 
-        <EditText
-            android:id="@+id/answers_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:hint="@string/answers"
-            android:textAppearance="?android:textAppearanceMedium" />
-        <Button
-            android:id="@+id/move"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SUBMIT" />
+        <variable
+            name="game"
+            type="com.android.qna.model.Game" />
+    </data>
 
-</LinearLayout>
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        tools:context=".GameActivity">
+
+        <include layout="@layout/game_content"/>
+
+
+    </android.support.design.widget.CoordinatorLayout>
+</layout>

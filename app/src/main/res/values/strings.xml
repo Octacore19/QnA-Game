@@ -6,4 +6,6 @@
     <string name="questions">Question</string>
     <string name="answers">Answer</string>
     <string name="save">save</string>
+    <string name="submit">SUBMIT</string>
+    <string name="add_data">Add New Data</string>
 </resources>

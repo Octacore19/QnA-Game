@@ -29,6 +29,10 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
+        if (SyncUser.current() != null) {
+            this.goToItemsActivity();
+        }
+
         // Set up the login form.
         mNicknameTextView = findViewById(R.id.nickname);
         Button loginButton = findViewById(R.id.login_button);
@@ -89,13 +93,5 @@ public class WelcomeActivity extends AppCompatActivity {
     private void goToItemsActivity(){
         Intent intent = new Intent(WelcomeActivity.this, GameActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (SyncUser.current() != null) {
-            this.goToItemsActivity();
-        }
     }
 }
