@@ -1,11 +1,3 @@
 <resources>
-    <string name="app_name">QnA</string>
-    <string name="log_out">Log Out</string>
-    <string name="enter_question">Enter question</string>
-    <string name="enter_answer">Enter answer</string>
-    <string name="questions">Question</string>
-    <string name="answers">Answer</string>
-    <string name="save">save</string>
-    <string name="submit">SUBMIT</string>
-    <string name="add_data">Add New Data</string>
+    <string name="correct_score">Correct Score</string>
 </resources>
